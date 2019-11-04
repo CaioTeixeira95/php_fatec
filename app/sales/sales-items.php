@@ -1,9 +1,10 @@
-<?php 
+<?php
 
-require "header.php";
-require __DIR__."/../vendor/autoload.php";
+require "../header.php";
+require __DIR__."/../../vendor/autoload.php";
 
 use Source\Models\Sales;
+use Source\Models\SalesItems;
 use Source\Models\Products;
 
 if(empty($_GET['id']) && !is_numeric($_GET['id'])) {
@@ -16,7 +17,9 @@ else {
 $sale = (new Sales())->findById($id_sale);
 $items = $sale->getItems();
 
-$products = (new Products)->find()->fetch(true);
+$products = (new Products())->find()->order("description")->fetch(true);
+
+$i = 0;
 
 ?>
 <h1>Venda <?=$sale->id?></h1>
@@ -28,7 +31,8 @@ $products = (new Products)->find()->fetch(true);
 		<div>
 			<fieldset>
 				<legend>Adicione um novo item</legend>
-				<form>
+				<form method="POST" action="sales-items-proc.php">
+					<input type="hidden" name="id_sale" value="<?=$sale->id?>">
 					<label>Descrição: </label>
 					<select name="item">
 						<option value="">-- SELECIONE --</option>
@@ -46,6 +50,8 @@ $products = (new Products)->find()->fetch(true);
 					<input type="submit" value="Incluir Item">
 				</form>
 			</fieldset>
+			<br><br>
+			<button type="button" onclick="window.location = '../index.php'">Voltar ao inicio</button>
 		</div>
 	</div>
 
@@ -54,6 +60,7 @@ $products = (new Products)->find()->fetch(true);
 			<?php if($items != NULL): ?>
 				<table cellpadding="10" cellspacing="0" border="1">
 					<tr>
+						<th>Nº item</th>
 						<th>Descrição</th>
 						<th>Quantidade</th>
 						<th>Valor</th>
@@ -61,16 +68,20 @@ $products = (new Products)->find()->fetch(true);
 					</tr>
 					<?php foreach($items as $item): ?>
 						<tr>
-							<td>$item->id</td>
-							<td>$item->description</td>
-							<td>$item->quantity</td>
-							<td>$item->price</td>
-							<td>
-								[<a href="sales-items-edit.php?id=<?$item->id?>?>">Editar</a>]
+							<td><?=++$i?></td>
+							<td><?=$item->getDescription()->description?></td>
+							<td><?=$item->quantity?></td>
+							<td><?=number_format($item->price, 2, '.', '')?></td>
+							<td colspan="2">
+								[<a href="sales-items-edit.php?id=<?=$item->id?>">Editar</a>]
 								[<a href="sales-items-delete.php?id=<?=$item->id?>">Excluir</a>]
 							</td>
 						</tr>
 					<?php endforeach ?>
+					<tr>
+						<td colspan="4"><b>Total</b></td>
+						<td colspan="2">R$ <?=number_format($sale->total, 2, '.', '')?></td>
+					</tr>
 				</table>
 			<?php else: ?>
 				<h3>Nenhum item na venda.</h3>
@@ -81,14 +92,4 @@ $products = (new Products)->find()->fetch(true);
 </div>
 <br><br>
 
-<button type="button" onclick="window.location = 'index.php'">Voltar ao inicio</button>
-
-<?php 
-
-if($_SERVER['REQUEST_METHOD'] === "POST") {
-	
-}
-
- ?>
-
-<?php require "footer.php" ?>
+<?php require "../footer.php" ?>

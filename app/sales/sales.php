@@ -1,14 +1,14 @@
-<?php 
+<?php
 
-require "header.php";
-require __DIR__."/../vendor/autoload.php";
+require "../header.php";
+require __DIR__."/../../vendor/autoload.php";
 
 use Source\Models\Costumers;
 use Source\Models\Sales;
 use Source\Models\PaymentMethod;
 
-$costumers_list = (new Costumers())->find()->fetch(true);
-$payment_method_list = (new PaymentMethod())->find()->fetch(true);
+$costumers_list = (new Costumers())->find()->order("name")->fetch(true);
+$payment_method_list = (new PaymentMethod())->find()->order("description")->fetch(true);
 
 ?>
 <h1>Nova Venda</h1>
@@ -31,7 +31,7 @@ $payment_method_list = (new PaymentMethod())->find()->fetch(true);
 	</select>
 	<br><br>
 	<input type="submit" value="Salvar">
-	<button type="button" onclick="window.location = 'index.php';">Voltar</a>
+	<button type="button" onclick="window.location = '../index.php';">Voltar</a>
 </form>
 
 <?php
@@ -55,4 +55,4 @@ if($_SERVER['REQUEST_METHOD'] === "POST" && !empty($_POST['costumer']) && !empty
 
 ?>
 
-<?php require "footer.php" ?>
+<?php require "../footer.php" ?>

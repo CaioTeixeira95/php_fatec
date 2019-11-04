@@ -9,5 +9,9 @@ class SalesItems extends DataLayer {
 	public function __construct() {
 		parent::__construct("sales_items", ["id_product", "id_sale", "quantity", "price"], "id", false);
 	}
-	
+
+    public function getDescription() {
+        return (new Products())->findById($this->id_product);
+    }
+
 }

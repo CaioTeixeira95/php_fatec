@@ -1,9 +1,9 @@
 <?php
 
 define("DATA_LAYER_CONFIG", [
-    "driver" => "mysql",
+    "driver" => "pgsql",
     "host" => "localhost",
-    "port" => "3306",
+    "port" => "5432",
     "dbname" => "evaluation",
     "username" => "caio",
     "passwd" => "Caio1995",
